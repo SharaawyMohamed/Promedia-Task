@@ -42,7 +42,7 @@ namespace StudentAPI.Service
 				return await Responses.FailurResponse(HttpStatusCode.NotFound, $"Invalid student Id {Id}");
 			}
 
-			if (_studntRepository.DeleteStudent(student))
+			if (_studntRepository.DeleteStudent(Id))
 			{
 				return await Responses.SuccessResponse("Student has been deleted sucessfully!");
 			}

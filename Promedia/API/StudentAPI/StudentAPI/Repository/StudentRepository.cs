@@ -18,7 +18,7 @@ namespace StudentAPI.Services
 		}
 
 		public async Task<Student?> GetStudentById(int Id)
-		=>  (_dbContext.Students.FromSqlRaw("SP_GetStudentById @Id={0}", Id).AsEnumerable().FirstOrDefault())!;
+		=> (_dbContext.Students.FromSqlRaw("SP_GetStudentById @Id={0}", Id).AsEnumerable().FirstOrDefault())!;
 
 		public async Task<IEnumerable<Student>?> GetAllStudnts()
 			=> await _dbContext.Students.FromSqlRaw("SP_GetAllStudents").ToListAsync();
@@ -26,7 +26,7 @@ namespace StudentAPI.Services
 		public async Task<bool> IsValidNatianlId(string nationalId)
 		{
 			var result = await _dbContext.Database.ExecuteSqlRawAsync("SP_ValidNationalId @NationalId = {0}", nationalId);
-			return result <=0 ;
+			return result <= 0;
 		}
 		public async Task<bool> AddStudentAsync(Student student)
 		{
@@ -34,21 +34,41 @@ namespace StudentAPI.Services
 			{
 
 				await _dbContext.Database.ExecuteSqlRawAsync(
-				"EXEC SP_AddStudent @FName = {0}, @LName = {1}, @NationalId = {2}, @BirthDate = {3}, @Address = {4}, @Gender = {5}",
-				student.FirstName, student.LastName, student.NationalId, student.BirthOfDate, student.Address, student.Gender);
+				"exec SP_StudentCommands @command = {0}, @Id = {1}, @FName = {2}, @LName = {3}, @NationalId = {4}, @BirthDate = {5}, @Address = {6}, @Gender = {7}",
+				"Insert",
+				0,
+				student.FirstName,
+				student.LastName,
+				student.NationalId,
+				student.BirthOfDate,
+				student.Address,
+				student.Gender
+				);
 				return true;
 			}
 			catch
 			{
-				return false;
+				{
+					return false;
+				}
 			}
 		}
 
-		public bool DeleteStudent(Student student)
+		public bool DeleteStudent(int Id)
 		{
 			try
 			{
-				_dbContext.Database.ExecuteSqlRaw("EXEC SP_DeleteStudentById @Id = {0}", student.Id);
+				_dbContext.Database.ExecuteSqlRaw(
+					"exec SP_StudentCommands @command = {0}, @Id = {1}, @FName = {2}, @LName = {3}, @NationalId = {4}, @BirthDate = {5}, @Address = {6}, @Gender = {7}",
+				string.Empty,
+				Id,
+				string.Empty,
+				string.Empty,
+				string.Empty,
+				DateTime.Now,
+				string.Empty,
+				string.Empty
+				);
 				return true;
 			}
 			catch
@@ -62,8 +82,16 @@ namespace StudentAPI.Services
 			try
 			{
 				_dbContext.Database.ExecuteSqlRaw(
-				 "EXEC SP_UpdateStudent @Id = {0}, @FName = {1}, @LName = {2}, @NationalId = {3}, @BirthDate = {4}, @Address = {5}, @Gender = {6}",
-				  student.Id, student.FirstName, student.LastName, student.NationalId, student.BirthOfDate, student.Address, student.Gender);
+				 "exec SP_StudentCommands @command = {0}, @Id = {1}, @FName = {2}, @LName = {3}, @NationalId = {4}, @BirthDate = {5}, @Address = {6}, @Gender = {7}",
+				  "Update",
+				  student.Id,
+				  student.FirstName,
+				  student.LastName,
+				  student.NationalId,
+				  student.BirthOfDate,
+				  student.Address,
+				  student.Gender
+				  );
 				return true;
 			}
 			catch

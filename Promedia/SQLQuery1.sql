@@ -69,4 +69,39 @@ select COUNT(*)
 from Student
 where NationalId=@NationalId
 
+create or alter procedure SP_StudentCommands(
+@command nvarchar(10)=null,
+@Id int=null, 
+@FName nvarchar(20)=null,
+@LName nvarchar(20)=null,
+@NationalId char(14)=null,
+@BirthDate date=null,
+@Address nvarchar(50)=null,
+@Gender char(1)=null
+)
+with encryption
+as
 
+if @command='Insert'
+begin
+ insert into Student (FirstName, LastName, NationalId, BirthOfDate, Address, Gender)
+ values (@FName, @LName, @NationalId, @BirthDate, @Address, @Gender)
+end
+
+
+else if @command='Update'
+begin
+ update Student
+ set FirstName=@FName,
+     LastName=@LName,
+     NationalId=@NationalId,
+     BirthOfDate=@BirthDate,
+     Address=@Address,
+     Gender=@Gender
+ where Id=@Id
+end
+
+else 
+begin
+ delete from Student where Id=@Id
+end

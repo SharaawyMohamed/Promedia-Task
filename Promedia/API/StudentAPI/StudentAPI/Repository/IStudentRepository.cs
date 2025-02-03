@@ -13,7 +13,7 @@ namespace StudentAPI.Repository
 
 		Task<bool> IsValidNatianlId(string nationalId);
 
-		bool DeleteStudent(Student student);
+		bool DeleteStudent(int Id);
 
 		bool UpdateStudent(Student student);
 	}
